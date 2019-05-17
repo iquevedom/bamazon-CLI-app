@@ -22,10 +22,7 @@ var connection = mysql.createConnection({
 
 // connect to the mysql server and sql database
 connection.connect(function (err, res) {
-    if (err) throw err;
-    // run the start function after the connection is made to prompt the user
-    /*  console.log(res); */
-    /*  showProducts(); */
+    if (err) throw err
 });
 
 function main() {
@@ -38,11 +35,64 @@ function showProducts(callback) {
         console.log(chalk.red.white.underline("\n----- Welcome to bamazon!!!. These are the products you can buy. -----\n"));
         console.table(res);
         console.log("\n");
-        /*   connection.end(); */
         callback();
     });
 
 };
+
+function askContinue() {
+    inquirer
+        .prompt({
+            name: "cont",
+            type: "list",
+            message: "Would you like to continue?",
+            choices: ["yes", "EXIT"]
+        })
+        .then(function (answer) {
+            // based on their answer, either call the bid or the post functions
+            if (answer.cont === "yes") {
+                main();
+            } else {
+                connection.end();
+            }
+        });
+
+};
+
+
+function searchProduct(callback, userP, userQ) {
+    connection.query("SELECT * FROM products where ?",
+        [
+            {
+                item_id: userP
+            }
+        ],
+        function (err, res) {
+            if (err) throw err;
+            if (parseInt(res[0].stock_quantity) < parseInt(userQ)) {
+                console.log("Insufficient quantity!");
+                callback();
+            } else {
+                connection.query("UPDATE products SET ? WHERE ?",
+                    [
+                        {
+                            stock_quantity:  parseInt(res[0].stock_quantity) -  parseInt(userQ)
+                        },
+                        {
+                            item_id: parseInt(userP)
+                        }
+                    ],
+                    function (error) {
+                        if (error) throw err;
+                    }
+                );
+                console.log("Your total purchase is : ", parseInt(userQ) * parseInt(res[0].price));
+                callback();
+            };
+        });
+
+};
+
 
 
 // MAIN MENU : User selection prompt.
@@ -75,10 +125,9 @@ function menu() {
             }
         ])
         .then(function (itemResponse) {
-            userP = itemResponse.userProduct;
-            console.log("user wants to buy item number : ", userP);
-            userQ = itemResponse.userQty;
-            console.log("you wan to buy ", userQ, " items");
+             userP = itemResponse.userProduct;
+             userQ = itemResponse.userQty;
+            searchProduct(askContinue, userP, userQ);
         });
 };
 
