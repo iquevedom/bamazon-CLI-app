@@ -148,14 +148,79 @@ function buyMenu() {
 
 function lowInventory(callback) {
     var query = "select item_id, product_name, department_name, stock_quantity from products where stock_quantity < 5 order by 1;";
-    connection.query(query, function(err, res) {
+    connection.query(query, function (err, res) {
         if (err) throw err;
         console.log(chalk.red.white.underline(chalk.white.bold.bgRed("\n------------------- List of products with low inventory -------------------\n")));
         console.table(res);
         console.log("\n");
         callback();
     });
-  }
+}
+
+
+function addInventory(callback) {
+    inquirer
+        .prompt([
+            // User enter the id of the product that wants to add inventory
+            {
+                type: "input",
+                message: "------  Please enter the ID of the product you want to add qty :",
+                name: "userProduct",
+                // is a number validation
+                validate: function (value) {
+                    if (isNaN(value) === false) {
+                        return true;
+                    }
+                    return false;
+                }
+            },
+            {
+                // User enter the qty that wants to buy
+                type: "input",
+                message: "------ How many units you want to add :",
+                name: "userQty",
+                // is a number validation
+                validate: function (value) {
+                    if (isNaN(value) === false) {
+                        return true;
+                    }
+                    return false;
+                }
+            }
+        ])
+        .then(function (itemResponse) {
+            // Set the user choices in variables
+            userP = itemResponse.userProduct;
+            userQ = itemResponse.userQty;
+
+            connection.query("SELECT * FROM products where ?",
+                [{
+                    item_id: userP
+                }],
+                function (err, res) {
+                    if (err) throw err;
+                    if (!(res[0])) {
+                        // It is not a valid item
+                        console.log(chalk.white.bgRed.bold("\nPlease enter a valid item id------\n"));
+                        callback();
+                    } else {
+                        connection.query("UPDATE products SET ? WHERE ?",
+                            [{
+                                stock_quantity: parseInt(res[0].stock_quantity) + parseInt(userQ)
+                            },
+                            {
+                                item_id: parseInt(userP)
+                            }],
+                            function (error, res) {
+                                if (error) { throw err; }
+                                console.log(chalk.white.bgBlue("\nThe product "," has been updated!!\n" ));
+                                callback();
+                            });
+                    }
+
+                });
+            
+        })}
 
 
 // MAIN  MENU : User selection prompt.
@@ -187,11 +252,11 @@ function mainMenu() {
                     break;
 
                 case "Add to Inventory":
-                   /*  rangeSearch(); */
+                    addInventory(askContinue);
                     break;
 
                 case "Add New Product":
-                  /*   songSearch(); */
+                    /*   songSearch(); */
                     break;
 
                 case "exit":
