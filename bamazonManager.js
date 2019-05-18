@@ -225,14 +225,14 @@ function addInventory(callback) {
 
 // MAIN  MENU : User selection prompt.
 function mainMenu() {
-    console.log("\nPlease select your choice : \n")
+    console.log("\n Welcome to bamazon \n")
     inquirer
         .prompt(
             // User enter the id of the product.
             {
                 name: "action",
                 type: "list",
-                message: "\nWhat do you want to do:\n",
+                message: "What do you want to do:",
                 choices: [
                     "View Products for Sale",
                     "View Low Inventory",

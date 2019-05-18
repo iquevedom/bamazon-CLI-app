@@ -1,2 +1,72 @@
 # bamazon-CLI-app
-Storefront using MySQL to take in orders from customers and deplete stock from the store's inventory, 
+### Storefront using MySQL to take in orders from customers and deplete stock from the store's inventory, 
+
+1. Uses MySQL database called `bamazon`
+   
+2. The database contains a table called `products` with this columns:
+
+    - item_id (Primary Key)
+    - product_name
+    - department_name
+    - price
+    - stock_quantity
+
+## Installs
+
+The package.json lists dependent node packages. You must to run "npm init" in your terminal. This will instal third party npm packages.
+
+## Environment
+
+1. To use `bamazon` you have to install.
+
+### MySQL
+    - Go to [MySQL for Windows](https://dev.mysql.com/downloads/installer).
+    - Download MySQL’s installer.
+    - Set your root password.
+    - 
+### MySQL Workbench
+    - Go to the [MySQL Workbench](https://dev.mysql.com/downloads/workbench) website.
+    - Select the 64-bit Windows version of the software.
+    - Download and run the installer.
+
+### MAMP
+    - Go to the [MAMP website](https://www.mamp.info/en/downloads/).
+    - Select the download for Windows.
+    - Follow the prompts to complete the installation. 
+
+## Get Started
+
+1. Main Menu, select 1 listed option:
+   - "View Products for Sale" to buy a product,
+   - "View Low Inventory" for get information about a the products with low inventory (less than 5 units),
+   - "Add to Inventory" increments the actual qty of a product,
+   - "Add New Product" add a new product to the table (not implemented at this time)
+   -  "exit".
+
+To perform a buy, select the "View Products for sale" option, enter the item id of the product and the amount that you want to buy, then the app display de total purchase and updates the qty in the products table.
+![](./gif/View_products_for_sale.gif)
+   
+## Technologies used to build app
+
+   - [Node.js,](https://nodejs.org/en/)
+   - [Javascript,](https://www.w3schools.com/js/default.asp)
+   - 
+   - Node Packages :
+     - MySQL
+     - dotenv
+     - chalk,
+     - console.table,
+     - iquirer.
+
+## Future code development
+
+    - Add a new product.
+    - Add a departments table for create a View Product Sales by Department including:
+      - product sales,
+      - total profits,
+      - summary of the highest-grossing departments. 
+
+## Author
+
+[Isidro Quevedo](https://iquevedom.github.io/My_Bio/)
+
