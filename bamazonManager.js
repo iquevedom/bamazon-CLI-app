@@ -25,19 +25,19 @@ var connection = mysql.createConnection({
 // connect to the mysql server and sql database and execute main menu
 connection.connect(function (err, res) {
     if (err) throw err;
-    main();
+    mainMenu();
 });
 
 // Main menu
 function main() {
-    showProducts(menu);
+    showProducts(buyMenu);
 }
 
 // Display of items to sale
 function showProducts(callback) {
     connection.query("SELECT * FROM products", function (err, res) {
         if (err) throw err;
-        console.log(chalk.red.white.underline("----- Welcome to bamazon!!!. These are the products you can buy. -----\n"));
+        console.log(chalk.red.white.underline("\n----- Welcome to bamazon!!!. These are the products you can buy. -----\n"));
         console.table(res);
         console.log("\n");
         callback();
@@ -57,7 +57,7 @@ function askContinue() {
         .then(function (answer) {
             // based on their answer, either call the bid or the post functions
             if (answer.cont === "YES") {
-                main();
+                mainMenu();
             } else {
                 // Exit app
                 connection.end();
@@ -106,8 +106,8 @@ function searchProduct(callback, userP, userQ) {
     )
 }
 
-// MAIN MENU : User selection prompt.
-function menu() {
+// BUY MENU : User selection prompt.
+function buyMenu() {
     inquirer
         .prompt([
             // User enter the id of the product.
@@ -143,5 +143,60 @@ function menu() {
             userQ = itemResponse.userQty;
             // Cal the function searchProduct and send the user choices
             searchProduct(askContinue, userP, userQ);
+        });
+}
+
+function lowInventory(callback) {
+    var query = "select item_id, product_name, department_name, stock_quantity from products where stock_quantity < 5 order by 1;";
+    connection.query(query, function(err, res) {
+        if (err) throw err;
+        console.log(chalk.red.white.underline(chalk.white.bold.bgRed("\n------------------- List of products with low inventory -------------------\n")));
+        console.table(res);
+        console.log("\n");
+        callback();
+    });
+  }
+
+
+// MAIN  MENU : User selection prompt.
+function mainMenu() {
+    console.log("\nPlease select your choice : \n")
+    inquirer
+        .prompt(
+            // User enter the id of the product.
+            {
+                name: "action",
+                type: "list",
+                message: "\nWhat do you want to do:\n",
+                choices: [
+                    "View Products for Sale",
+                    "View Low Inventory",
+                    "Add to Inventory",
+                    "Add New Product",
+                    "exit"
+                ]
+            })
+        .then(function (answer) {
+            switch (answer.action) {
+                case "View Products for Sale":
+                    main();
+                    break;
+
+                case "View Low Inventory":
+                    lowInventory(askContinue);
+                    break;
+
+                case "Add to Inventory":
+                   /*  rangeSearch(); */
+                    break;
+
+                case "Add New Product":
+                  /*   songSearch(); */
+                    break;
+
+                case "exit":
+                    connection.end();
+                    break;
+            }
         });
 }
