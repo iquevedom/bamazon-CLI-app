@@ -19,18 +19,18 @@ The package.json lists dependent node packages. You must to run "npm init" in yo
 
 1. To use `bamazon` you have to install.
 
-### MySQL
-    - Go to [MySQL for Windows](https://dev.mysql.com/downloads/installer).
+#### MySQL
+    - Go to [MySQL_for_Windows](https://dev.mysql.com/downloads/installer).
     - Download MySQL’s installer.
     - Set your root password.
     - 
-### MySQL Workbench
-    - Go to the [MySQL Workbench](https://dev.mysql.com/downloads/workbench) website.
+#### MySQL Workbench
+    - Go to the [MySQL_Workbench](https://dev.mysql.com/downloads/workbench) website.
     - Select the 64-bit Windows version of the software.
     - Download and run the installer.
 
-### MAMP
-    - Go to the [MAMP website](https://www.mamp.info/en/downloads/).
+#### MAMP
+    - Go to the [MAMP_website](https://www.mamp.info/en/downloads/)
     - Select the download for Windows.
     - Follow the prompts to complete the installation. 
 
@@ -46,17 +46,15 @@ The package.json lists dependent node packages. You must to run "npm init" in yo
 To perform a buy, select the "View Products for sale" option, enter the item id of the product and the amount that you want to buy, then the app display de total purchase and updates the qty in the products table.
 ![](./gif/View_products_for_sale.gif)
    
-## Technologies used to build app
+## Technologies used to build the app
 
    - [Node.js,](https://nodejs.org/en/)
    - [Javascript,](https://www.w3schools.com/js/default.asp)
-   - 
    - Node Packages :
      - MySQL
-     - dotenv
      - chalk,
      - console.table,
-     - iquirer.
+     - inquirer.
 
 ## Future code development
 
