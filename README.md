@@ -20,19 +20,19 @@ The package.json lists dependent node packages. You must to run "npm init" in yo
 1. To use `bamazon` you have to install.
 
 #### MySQL
-    - Go to [MySQL_for_Windows](https://dev.mysql.com/downloads/installer).
-    - Download MySQL’s installer.
-    - Set your root password.
-    - 
+   - Go to [MySQL_for_Windows](https://dev.mysql.com/downloads/installer).
+   - Download MySQL’s installer.
+   - Set your root password.
+   -  
 #### MySQL Workbench
-    - Go to the [MySQL_Workbench](https://dev.mysql.com/downloads/workbench) website.
-    - Select the 64-bit Windows version of the software.
-    - Download and run the installer.
+   - Go to the [MySQL_Workbench](https://dev.mysql.com/downloads/workbench) website.
+   - Select the 64-bit Windows version of the software.
+   - Download and run the installer.
 
 #### MAMP
-    - Go to the [MAMP_website](https://www.mamp.info/en/downloads/)
-    - Select the download for Windows.
-    - Follow the prompts to complete the installation. 
+   - Go to the [MAMP_website](https://www.mamp.info/en/downloads/)
+   - Select the download for Windows.
+   - Follow the prompts to complete the installation. 
 
 ## Get Started
 
