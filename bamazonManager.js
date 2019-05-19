@@ -39,7 +39,7 @@ let getPidQty =
                 // User enter the id of the product.
                 [{
                     type: "input",
-                    message: "------  PleaseE enter the ID of the product :",
+                    message: "------  Please enter the ID of the product :",
                     name: "userProduct",
                     // is a number validation
                     validate: function (value) {
@@ -52,7 +52,7 @@ let getPidQty =
                 {
                     // User enter the qty that wants to buy
                     type: "input",
-                    message: "------ Pleas enter the product qty :",
+                    message: "------ Please enter the product qty :",
                     name: "userQty",
                     // is a number validation
                     validate: function (value) {
@@ -67,18 +67,20 @@ let getPidQty =
                 // Set the user choices in variables
                 userP = itemResponse.userProduct;
                 userQ = itemResponse.userQty;
-                if (uAction === "View Products for Sale") { searchProduct(userP, userQ) }
+                if (uAction === "View Products for Sale") {
+                    searchProduct(userP, userQ)
+                }
                 else if (uAction === "Add to Inventory") {
                     addInventory();
                 } else if (uAction === "Add New Product") {
-                    newProduct(userP,userQ);
+                    newProduct(userP, userQ);
                 }
             });
     };
 
 // Display of items to sale
 function showProducts() {
-    connection.query("SELECT * FROM products", function (err, res) {
+    connection.query("SELECT item_id, product_name, department_name, price, stock_quantity FROM products", function (err, res) {
         if (err) throw err;
         console.log(chalk.red.white.underline("\n----- Welcome to bamazon!!!. These are the products you can buy. -----\n"));
         console.table(res);
@@ -108,9 +110,12 @@ function searchProduct(userP, userQ) {
                 } else {
                     // Display total amount of purchase and updates products table
                     console.log(chalk.white.bgBlue.bold("\n------ Your total purchase is : ", parseInt(userQ) * parseInt(res[0].price), "------\n"));
-                    connection.query("UPDATE products SET ? WHERE ?",
+                    connection.query("UPDATE products SET ?,? WHERE ?",
                         [{
                             stock_quantity: parseInt(res[0].stock_quantity) - parseInt(userQ)
+                        },
+                        {
+                            product_sales: (res[0].product_sales + (parseInt(userQ) * parseInt(res[0].price)))
                         },
                         {
                             item_id: parseInt(userP)
@@ -166,7 +171,7 @@ function addInventory() {
         });
 }
 
-function newProduct(userPp,userQq) {
+function newProduct(userPp, userQq) {
     inquirer
         .prompt(
             // User enter the id of the product.
@@ -199,13 +204,15 @@ function newProduct(userPp,userQq) {
             // Set the user choices in variables
             userP = itemResponse.userProduct;
             userQ = itemResponse.userQty;
-            var resp = 'INSERT INTO products (item_id,product_name,department_name,price, stock_quantity) VALUES(' + userPp +',' + '"' + itemResponse.productName + '","' + itemResponse.departmentName + '",' + itemResponse.productPrice + ',' + userQq + ')';
-            console.log("el query es : ",resp);
+            var resp = 'INSERT INTO products (item_id,product_name,department_name,price, stock_quantity) VALUES(' + userPp + ',' + '"' + itemResponse.productName + '","' + itemResponse.departmentName + '",' + itemResponse.productPrice + ',' + userQq + ')';
+            console.log("el query es : ", resp);
             connection.query(resp,
                 function (error, res) {
-                    if (error) { console.log(error); console.log(connection.query)}
-                    else {console.log(chalk.white.bgBlue("\nThe product ", " has been added!!\n"));
-                    mainMenu();}
+                    if (error) { console.log(error); console.log(connection.query) }
+                    else {
+                        console.log(chalk.white.bgBlue("\nThe product ", " has been added!!\n"));
+                        mainMenu();
+                    }
                 });
         })
 
