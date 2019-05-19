@@ -3,6 +3,9 @@ var inquirer = require("inquirer");
 const chalk = require('chalk');
 var userP = 0;
 var userQ = 0;
+var uAction = "";
+var userPp = "";
+var userQq = "";
 // divider will be used when neccesary
 var divider = "\n------------------------------------------------------------\n\n";
 
@@ -28,47 +31,65 @@ connection.connect(function (err, res) {
     mainMenu();
 });
 
-// Main menu
-function main() {
-    showProducts(buyMenu);
-}
+// Prompt to get product id and qty
+let getPidQty =
+    function (uAction) {
+        inquirer
+            .prompt(
+                // User enter the id of the product.
+                [{
+                    type: "input",
+                    message: "------  PleaseE enter the ID of the product :",
+                    name: "userProduct",
+                    // is a number validation
+                    validate: function (value) {
+                        if (isNaN(value) === false) {
+                            return true;
+                        }
+                        return false;
+                    }
+                },
+                {
+                    // User enter the qty that wants to buy
+                    type: "input",
+                    message: "------ Pleas enter the product qty :",
+                    name: "userQty",
+                    // is a number validation
+                    validate: function (value) {
+                        if (isNaN(value) === false) {
+                            return true;
+                        }
+                        return false;
+                    }
+                }]
+            )
+            .then(function (itemResponse) {
+                // Set the user choices in variables
+                userP = itemResponse.userProduct;
+                userQ = itemResponse.userQty;
+                if (uAction === "View Products for Sale") { searchProduct(userP, userQ) }
+                else if (uAction === "Add to Inventory") {
+                    addInventory();
+                } else if (uAction === "Add New Product") {
+                    newProduct(userP,userQ);
+                }
+            });
+    };
 
 // Display of items to sale
-function showProducts(callback) {
+function showProducts(/* callback */) {
     connection.query("SELECT * FROM products", function (err, res) {
         if (err) throw err;
         console.log(chalk.red.white.underline("\n----- Welcome to bamazon!!!. These are the products you can buy. -----\n"));
         console.table(res);
         console.log("\n");
-        callback();
-    });
-
-};
-
-// Ask to user if wants to continue
-function askContinue() {
-    inquirer
-        .prompt({
-            name: "cont",
-            type: "list",
-            message: "------ Would you like to continue? -----\n",
-            choices: ["YES", "EXIT"]
-        })
-        .then(function (answer) {
-            // based on their answer, either call the bid or the post functions
-            if (answer.cont === "YES") {
-                mainMenu();
-            } else {
-                // Exit app
-                connection.end();
-            }
-        });
-
+        getPidQty(uAction);
+    })
 };
 
 // Search of the product the user wants to buy, check if exists
 //check if theres is sufficient stock, and updates products table
-function searchProduct(callback, userP, userQ) {
+function searchProduct(userP, userQ) {
     connection.query("SELECT * FROM products where ?",
         [{
             item_id: userP
@@ -78,12 +99,12 @@ function searchProduct(callback, userP, userQ) {
             if (!(res[0])) {
                 // It is not a valid item
                 console.log(chalk.white.bgRed.bold("\nPlease enter a valid item id------\n"));
-                callback();
+                mainMenu();
             } else {
                 // is there enough stock?
                 if (parseInt(res[0].stock_quantity) < parseInt(userQ)) {
                     console.log(chalk.white.bgRed.bold("\nInsufficient quantity!------\n"));
-                    callback();
+                    mainMenu();
                 } else {
                     // Display total amount of purchase and updates products table
                     console.log(chalk.white.bgBlue.bold("\n------ Your total purchase is : ", parseInt(userQ) * parseInt(res[0].price), "------\n"));
@@ -98,7 +119,9 @@ function searchProduct(callback, userP, userQ) {
                             if (error) { throw err; }
                         }
                     )
-                    callback()
+                    mainMenu();
+
+                    /*   callback() */
                 }
             }
 
@@ -106,80 +129,65 @@ function searchProduct(callback, userP, userQ) {
     )
 }
 
-// BUY MENU : User selection prompt.
-function buyMenu() {
-    inquirer
-        .prompt([
-            // User enter the id of the product.
-            {
-                type: "input",
-                message: "------  Please enter the ID of the product you want to buy :",
-                name: "userProduct",
-                // is a number validation
-                validate: function (value) {
-                    if (isNaN(value) === false) {
-                        return true;
-                    }
-                    return false;
-                }
-            },
-            {
-                // User enter the qty that wants to buy
-                type: "input",
-                message: "------ How many units you want to buy :",
-                name: "userQty",
-                // is a number validation
-                validate: function (value) {
-                    if (isNaN(value) === false) {
-                        return true;
-                    }
-                    return false;
-                }
-            }
-        ])
-        .then(function (itemResponse) {
-            // Set the user choices in variables
-            userP = itemResponse.userProduct;
-            userQ = itemResponse.userQty;
-            // Cal the function searchProduct and send the user choices
-            searchProduct(askContinue, userP, userQ);
-        });
-}
-
-function lowInventory(callback) {
+function lowInventory() {
     var query = "select item_id, product_name, department_name, stock_quantity from products where stock_quantity < 5 order by 1;";
     connection.query(query, function (err, res) {
         if (err) throw err;
         console.log(chalk.red.white.underline(chalk.white.bold.bgRed("\n------------------- List of products with low inventory -------------------\n")));
         console.table(res);
         console.log("\n");
-        callback();
+        mainMenu();
     });
 }
 
+function addInventory(/* callback */) {
+    connection.query("SELECT * FROM products where ?",
+        [{
+            item_id: userP
+        }],
+        function (err, res) {
+            if (err) throw err;
+            if (!(res[0])) {
+                // It is not a valid item
+                console.log(chalk.white.bgRed.bold("\nPlease enter a valid item id------\n"));
+                /* callback(); */
+                mainMenu();
+            } else {
+                connection.query("UPDATE products SET ? WHERE ?",
+                    [{
+                        stock_quantity: parseInt(res[0].stock_quantity) + parseInt(userQ)
+                    },
+                    {
+                        item_id: parseInt(userP)
+                    }],
+                    function (error, res) {
+                        if (error) { throw err; }
+                        console.log(chalk.white.bgBlue("\nThe product ", " has been updated!!\n"));
+                        mainMenu();
+                    });
+            }
+        });
+}
 
-function addInventory(callback) {
+function newProduct(userPp,userQq) {
     inquirer
-        .prompt([
-            // User enter the id of the product that wants to add inventory
-            {
+        .prompt(
+            // User enter the id of the product.
+            [{
                 type: "input",
-                message: "------  Please enter the ID of the product you want to add qty :",
-                name: "userProduct",
-                // is a number validation
-                validate: function (value) {
-                    if (isNaN(value) === false) {
-                        return true;
-                    }
-                    return false;
-                }
+                message: "------  Enter the product name :",
+                name: "productName",
             },
             {
                 // User enter the qty that wants to buy
                 type: "input",
-                message: "------ How many units you want to add :",
-                name: "userQty",
-                // is a number validation
+                message: "------ Enter the department name :",
+                name: "departmentName",
+            },
+            {
+                type: "input",
+                message: "------  Enter the product price :",
+                name: "productPrice",
                 validate: function (value) {
                     if (isNaN(value) === false) {
                         return true;
@@ -187,44 +195,27 @@ function addInventory(callback) {
                     return false;
                 }
             }
-        ])
+            ]
+        )
         .then(function (itemResponse) {
             // Set the user choices in variables
             userP = itemResponse.userProduct;
             userQ = itemResponse.userQty;
-
-            connection.query("SELECT * FROM products where ?",
-                [{
-                    item_id: userP
-                }],
-                function (err, res) {
-                    if (err) throw err;
-                    if (!(res[0])) {
-                        // It is not a valid item
-                        console.log(chalk.white.bgRed.bold("\nPlease enter a valid item id------\n"));
-                        callback();
-                    } else {
-                        connection.query("UPDATE products SET ? WHERE ?",
-                            [{
-                                stock_quantity: parseInt(res[0].stock_quantity) + parseInt(userQ)
-                            },
-                            {
-                                item_id: parseInt(userP)
-                            }],
-                            function (error, res) {
-                                if (error) { throw err; }
-                                console.log(chalk.white.bgBlue("\nThe product "," has been updated!!\n" ));
-                                callback();
-                            });
-                    }
-
+            var resp = 'INSERT INTO products (item_id,product_name,department_name,price, stock_quantity) VALUES(' + userPp +',' + '"' + itemResponse.productName + '","' + itemResponse.departmentName + '",' + itemResponse.productPrice + ',' + userQq + ')';
+            console.log("el query es : ",resp);
+            connection.query(resp,
+                function (error, res) {
+                    if (error) { console.log(error); console.log(connection.query)}
+                    else {console.log(chalk.white.bgBlue("\nThe product ", " has been added!!\n"));
+                    mainMenu();}
                 });
-            
-        })}
+        })
 
+}
 
 // MAIN  MENU : User selection prompt.
 function mainMenu() {
+    uAction = "x";
     console.log("\n Welcome to bamazon \n")
     inquirer
         .prompt(
@@ -242,26 +233,23 @@ function mainMenu() {
                 ]
             })
         .then(function (answer) {
+            uAction = answer.action;
             switch (answer.action) {
                 case "View Products for Sale":
-                    main();
-                    break;
-
+                    showProducts();
+                    break
                 case "View Low Inventory":
-                    lowInventory(askContinue);
-                    break;
-
+                    lowInventory();
+                    break
                 case "Add to Inventory":
-                    addInventory(askContinue);
-                    break;
-
+                    getPidQty(uAction);
+                    break
                 case "Add New Product":
-                    /*   songSearch(); */
-                    break;
-
+                    getPidQty(uAction);
+                    break
                 case "exit":
                     connection.end();
-                    break;
+                    break
             }
         });
 }

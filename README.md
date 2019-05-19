@@ -40,7 +40,7 @@ The package.json lists dependent node packages. You must to run "npm init" in yo
    - "View Products for Sale" to buy a product,
    - "View Low Inventory" for get information about a the products with low inventory (less than 5 units),
    - "Add to Inventory" increments the actual qty of a product,
-   - "Add New Product" add a new product to the table (not implemented at this time)
+   - "Add New Product" add a new product to the table,
    -  "exit".
 
 To perform a buy, select the "View Products for sale" option, enter the item id of the product and the amount that you want to buy, then the app display de total purchase and updates the qty in the products table.
