@@ -24,8 +24,18 @@ connection.connect(function (err, res) {
 });
 
 function departmentSales () {
-
-}
+    /*
+    select department_name, sum(product_sales) as sales from products 
+    group by department_name order by department_name asc;
+*/
+    connection.query("SELECT department_name, SUM(product_sales) AS sales FROM PRODUCTS GROUP BY department_name ORDER BY department_name ASC", function (err, res) {
+        if (err) throw err;
+        console.log(chalk.red.white.underline("\n----- Welcome to bamazon!!!. These are the products you can buy. -----\n"));
+        console.table(res);
+        console.log("\n");
+        mainMenu();
+    })
+};
 
 function mainMenu() {
     // MAIN  MENU : Supervisor selection prompt.
