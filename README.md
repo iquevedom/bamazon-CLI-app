@@ -3,13 +3,18 @@
 
 1. Uses MySQL database called `bamazon`
    
-2. The database contains a table called `products` with this columns:
+2. The database contains : a table called `products` with this columns:
 
     - item_id (Primary Key)
     - product_name
     - department_name
     - price
-    - stock_quantity
+    - stock_quantity.
+  
+2. A table called `departments` with this columns:
+
+    - department_id (Primary Key)
+    - department_name
 
 ## Installs
 
@@ -23,7 +28,7 @@ The package.json lists dependent node packages. You must to run "npm init" in yo
    - Go to [MySQL_for_Windows](https://dev.mysql.com/downloads/installer).
    - Download MySQL’s installer.
    - Set your root password.
-   -  
+   
 #### MySQL Workbench
    - Go to the [MySQL_Workbench](https://dev.mysql.com/downloads/workbench) website.
    - Select the 64-bit Windows version of the software.
@@ -43,9 +48,23 @@ The package.json lists dependent node packages. You must to run "npm init" in yo
    - "Add New Product" add a new product to the table,
    -  "exit".
 
+
 To perform a buy, select the "View Products for sale" option, enter the item id of the product and the amount that you want to buy, then the app display de total purchase and updates the qty in the products table.
+
 ![](./gif/View_products_for_sale.gif)
+
+2. Supervisor Menu, select 1 listed option:
+   - "View Product Sales by Department" to buy a product,
+   - "View Sales by Product" for get information about a the products with low inventory (less than 5 units),
+   - "Create New Department" increments the actual qty of a product,
+   -  "exit".
    
+      - View Product Sales by Department displays the sales group by department id,
+      - View Sales by Product displays the sales group by product id,
+      - Create New Department insert into departments table a new department.
+  
+![](./gif/Supervisor_menu.gif)
+
 ## Technologies used to build the app
 
    - [Node.js,](https://nodejs.org/en/)
@@ -58,11 +77,10 @@ To perform a buy, select the "View Products for sale" option, enter the item id 
 
 ## Future code development
 
-    - Add a new product.
-    - Add a departments table for create a View Product Sales by Department including:
-      - product sales,
-      - total profits,
-      - summary of the highest-grossing departments. 
+    - Build a complete RDBMS for the management of the business including tables like :
+      - Human Reources,
+      - Supliers,
+      - Customers.
 
 ## Author
 
