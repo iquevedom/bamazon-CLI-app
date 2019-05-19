@@ -77,7 +77,7 @@ let getPidQty =
     };
 
 // Display of items to sale
-function showProducts(/* callback */) {
+function showProducts() {
     connection.query("SELECT * FROM products", function (err, res) {
         if (err) throw err;
         console.log(chalk.red.white.underline("\n----- Welcome to bamazon!!!. These are the products you can buy. -----\n"));
@@ -119,9 +119,7 @@ function searchProduct(userP, userQ) {
                             if (error) { throw err; }
                         }
                     )
-                    mainMenu();
-
-                    /*   callback() */
+                    mainMenu()
                 }
             }
 
@@ -140,7 +138,7 @@ function lowInventory() {
     });
 }
 
-function addInventory(/* callback */) {
+function addInventory() {
     connection.query("SELECT * FROM products where ?",
         [{
             item_id: userP
@@ -149,8 +147,7 @@ function addInventory(/* callback */) {
             if (err) throw err;
             if (!(res[0])) {
                 // It is not a valid item
-                console.log(chalk.white.bgRed.bold("\nPlease enter a valid item id------\n"));
-                /* callback(); */
+                console.log(chalk.white.bgRed.bold("\nPlease enter a valid item id------\n"))
                 mainMenu();
             } else {
                 connection.query("UPDATE products SET ? WHERE ?",
@@ -184,10 +181,11 @@ function newProduct(userPp,userQq) {
                 message: "------ Enter the department name :",
                 name: "departmentName",
             },
-            {
+            {   // User enter the product price
                 type: "input",
                 message: "------  Enter the product price :",
                 name: "productPrice",
+                // is a number validation
                 validate: function (value) {
                     if (isNaN(value) === false) {
                         return true;
