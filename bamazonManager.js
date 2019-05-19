@@ -224,7 +224,7 @@ function mainMenu() {
     console.log("\n Welcome to bamazon \n")
     inquirer
         .prompt(
-            // User enter the id of the product.
+            // User choose an option.
             {
                 name: "action",
                 type: "list",
