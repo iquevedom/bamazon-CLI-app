@@ -77,10 +77,10 @@ To perform a buy, select the "View Products for sale" option, enter the item id 
 
 ## Future code development
 
-    - Build a complete RDBMS for the management of the business including tables like :
-      - Human Reources,
-      - Supliers,
-      - Customers.
+Build a complete RDBMS for the management of the business including tables like :
+   - Human Reources,
+   - Supliers,
+   - Customers.
 
 ## Author
 
