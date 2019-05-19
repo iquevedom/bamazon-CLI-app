@@ -54,9 +54,9 @@ To perform a buy, select the "View Products for sale" option, enter the item id 
 ![](./gif/View_products_for_sale.gif)
 
 2. Supervisor Menu, select 1 listed option:
-   - "View Product Sales by Department" to buy a product,
-   - "View Sales by Product" for get information about a the products with low inventory (less than 5 units),
-   - "Create New Department" increments the actual qty of a product,
+   - "View Product Sales by Department" to get a summary of sales by department,
+   - "View Sales by Product" to get a summary of sales by product,
+   - "Create New Department" inserts into the departments table a new one,
    -  "exit".
    
       - View Product Sales by Department displays the sales group by department id,
