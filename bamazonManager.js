@@ -202,10 +202,9 @@ function newProduct(userPp, userQq) {
         )
         .then(function (itemResponse) {
             // Set the user choices in variables
-            userP = itemResponse.userProduct;
-            userQ = itemResponse.userQty;
+/*             userP = itemResponse.userProduct;
+            userQ = itemResponse.userQty; */
             var resp = 'INSERT INTO products (item_id,product_name,department_name,price, stock_quantity) VALUES(' + userPp + ',' + '"' + itemResponse.productName + '","' + itemResponse.departmentName + '",' + itemResponse.productPrice + ',' + userQq + ')';
-            console.log("el query es : ", resp);
             connection.query(resp,
                 function (error, res) {
                     if (error) { console.log(error); console.log(connection.query) }

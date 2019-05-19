@@ -2,6 +2,8 @@ var mysql = require("mysql");
 var inquirer = require("inquirer");
 const chalk = require('chalk');
 
+var newDName = "";
+
 // create the connection information for the sql database
 var connection = mysql.createConnection({
     host: "localhost",
@@ -23,7 +25,7 @@ connection.connect(function (err, res) {
     mainMenu();
 });
 
-function departmentSales () {
+function departmentSales() {
     /* Performs Sales by department report */
     connection.query("SELECT department_name, SUM(product_sales) AS sales FROM PRODUCTS GROUP BY department_name ORDER BY department_name ASC", function (err, res) {
         if (err) throw err;
@@ -34,7 +36,7 @@ function departmentSales () {
     })
 };
 
-function productSales () {
+function productSales() {
     /* Performs Sales by product report */
     connection.query("SELECT product_name, SUM(product_sales) AS sales FROM PRODUCTS GROUP BY product_name ORDER BY product_name ASC", function (err, res) {
         if (err) throw err;
@@ -45,8 +47,49 @@ function productSales () {
     })
 };
 
-function newDepartment(){
+let showDepartments = function(callback) {
+    /* Performs actual departments report */
+    connection.query("SELECT * FROM departments ORDER BY department_id", function (err, res) {
+        if (err) throw err;
+        console.log(chalk.red.white.underline("\n----- Actual departments report. -----\n"));
+        console.table(res);
+        console.log("\n");
+        callback();
+    })
+}
 
+// Prompt to get product id and qty
+let getPidQty =
+    function (callback) {
+        inquirer
+            .prompt(
+                // User enter the id of the product.
+                [{
+                    type: "input",
+                    message: "------  Enter the new department's name :",
+                    name: "dName",
+                    // is a number validation
+                }]
+            )
+            .then(function (itemResponse) {
+                // Set the user choices in variables
+                newDName = itemResponse.dName;
+                callback();
+            });
+    };
+
+function newDepartment() {
+    /* getPidQty(newDName); */
+    
+    var newDQuery = 'INSERT INTO departments (department_name) VALUES ("' + newDName + '");';
+    connection.query(newDQuery,
+        function (error, res) {
+            if (error) { console.log(error); console.log(connection.query) }
+            else {
+                console.log(chalk.white.bgBlue("\nThe new department ", " has been added!!\n"));
+            }
+        });
+        showDepartments(mainMenu);
 }
 
 function mainMenu() {
@@ -63,7 +106,6 @@ function mainMenu() {
                 choices: [
                     "View Product Sales by Department",
                     "View Sales by Product",
-                    "Add to Inventory",
                     "Create New Department",
                     "exit"
                 ]
@@ -75,10 +117,10 @@ function mainMenu() {
                     departmentSales();
                     break
                 case "View Sales by Product":
-                     productSales(); 
+                    productSales();
                     break
-                case "Add New Department":
-                    newDepartment();
+                case "Create New Department":
+                    getPidQty(newDepartment);
                     break
                 case "exit":
                     connection.end();
