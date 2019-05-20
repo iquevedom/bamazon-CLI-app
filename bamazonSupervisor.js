@@ -27,7 +27,7 @@ connection.connect(function (err, res) {
 
 function departmentSales() {
     /* Performs Sales by department report */
-    connection.query("SELECT department_name, SUM(product_sales) AS sales FROM PRODUCTS GROUP BY department_name ORDER BY department_name ASC", function (err, res) {
+    connection.query("SELECT department_name AS 'Department Name', SUM(product_sales) AS Sales FROM PRODUCTS GROUP BY department_name ORDER BY department_name ASC", function (err, res) {
         if (err) throw err;
         console.log(chalk.red.white.underline("\n----- Sales by Department Report. -----\n"));
         console.table(res);
@@ -38,7 +38,7 @@ function departmentSales() {
 
 function productSales() {
     /* Performs Sales by product report */
-    connection.query("SELECT product_name, SUM(product_sales) AS sales FROM PRODUCTS GROUP BY product_name ORDER BY product_name ASC", function (err, res) {
+    connection.query("SELECT product_name AS 'Product Name', SUM(product_sales) AS Sales FROM PRODUCTS GROUP BY product_name ORDER BY product_name ASC", function (err, res) {
         if (err) throw err;
         console.log(chalk.red.white.underline("\n----- Sales by Product Report. -----\n"));
         console.table(res);
@@ -49,7 +49,7 @@ function productSales() {
 
 let showDepartments = function(callback) {
     /* Performs actual departments report */
-    connection.query("SELECT * FROM departments ORDER BY department_id", function (err, res) {
+    connection.query("SELECT department_id AS 'Department Id', department_name AS 'Department Name' FROM departments ORDER BY department_id", function (err, res) {
         if (err) throw err;
         console.log(chalk.red.white.underline("\n----- Actual departments report. -----\n"));
         console.table(res);

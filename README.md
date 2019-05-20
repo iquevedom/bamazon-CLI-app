@@ -49,7 +49,7 @@ The package.json lists dependent node packages. You must to run "npm init" in yo
    -  "exit".
 
 
-To perform a buy, select the "View Products for sale" option, enter the item id of the product and the amount that you want to buy, then the app display de total purchase and updates the qty in the products table.
+To perform a buy, select the "View Products for sale" option, enter the item id of the product and the qty that you want to buy, then the app display the total purchase and updates the qty in the products table.
 
 ![](./gif/View_products_for_sale.gif)
 

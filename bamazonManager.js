@@ -80,7 +80,7 @@ let getPidQty =
 
 // Display of items to sale
 function showProducts() {
-    connection.query("SELECT item_id, product_name, department_name, price, stock_quantity FROM products", function (err, res) {
+    connection.query("SELECT item_id, product_name AS 'Product Name', department_name AS 'Department Name', price AS Price, stock_quantity AS 'Stock Quantity' FROM products", function (err, res) {
         if (err) throw err;
         console.log(chalk.red.white.underline("\n----- Welcome to bamazon!!!. These are the products you can buy. -----\n"));
         console.table(res);
@@ -133,7 +133,7 @@ function searchProduct(userP, userQ) {
 }
 
 function lowInventory() {
-    var query = "select item_id, product_name, department_name, stock_quantity from products where stock_quantity < 5 order by 1;";
+    var query = "select item_id AS 'Item Id', product_name AS 'Product Name', department_name AS 'Department Name', stock_quantity AS 'Stock Quantity' from products where stock_quantity < 5 order by 1;";
     connection.query(query, function (err, res) {
         if (err) throw err;
         console.log(chalk.red.white.underline(chalk.white.bold.bgRed("\n------------------- List of products with low inventory -------------------\n")));
